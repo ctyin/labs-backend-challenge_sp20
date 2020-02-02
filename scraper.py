@@ -54,7 +54,7 @@ def get_clubs(soup):
     for a single club.
     """
     
-    club_list = get_elements_with_class(soup, "div", "box")
+    club_list = get_elements_with_class(soup, 'box', 'box')
 
     return club_list
 
@@ -79,5 +79,6 @@ def get_club_tags(club):
     """
     Get the tag labels for all tags associated with a single club.
     """
-    return [] # TODO: Implement this function
+    tag_list = get_elements_with_class(club, 'tag is-info is-rounded')
 
+    return tag_list
