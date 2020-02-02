@@ -54,7 +54,7 @@ def get_clubs(soup):
     for a single club.
     """
     
-    club_list = get_elements_with_class(soup, 'box', 'box')
+    club_list = get_elements_with_class(soup, 'div', 'box')
 
     return club_list
 
@@ -73,7 +73,10 @@ def get_club_description(club):
     """
     Extract club description from a soup of 
     """
-    return '' # TODO: Implement this function
+    elts = get_elements_with_class(club, 'em', '')
+    if len(elts) < 1:
+        return ''
+    return elts[0]
 
 def get_club_tags(club):
     """
