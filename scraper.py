@@ -1,11 +1,21 @@
 from bs4 import BeautifulSoup
+import requests
+import urllib.request
+import time
 
+"""
+References https://towardsdatascience.com/how-to-web-scrape-with-python-in-4-minutes-bc49186a8460
+"""
 
 def get_html(url):
     """
     Retrieve the HTML from the website at `url`.
     """
-    return None  # TODO: Implement this function
+
+    # Adapted from provided medium article
+    response_html = requests.get(url).text
+
+    return response_html
 
 def get_clubs_html():
     """
@@ -43,7 +53,10 @@ def get_clubs(soup):
     This function should return a list of soups which each correspond to the html
     for a single club.
     """
-    return [] # TODO: Implement this function
+    
+    club_list = get_elements_with_class(soup, "div", "box")
+
+    return club_list
 
 def get_club_name(club):
     """
