@@ -1,7 +1,9 @@
 # Penn Labs Server Challenge
 
 ## Documentation
-Fill out this section as you complete the challenge!
+In order to store the clubs, I chose the JSON route for the following reasons:
+   * Persistence: to prevent having to rescrape the website, I didn't want to store the clubs in-memory. The only other option I was seriously considering was pickling. However, JSON is a more widely used standard and is not Python-specific.
+   * Ease of use: the JSON module in Python is pretty clean. Python object fields become dictionaries become JSON objects, and it easily transforms arrays to JSON arrays without much thought. 
 
 ## Installation
 1. Click the green "use this template" button to make your own copy of this repository, and clone it. 
