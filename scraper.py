@@ -21,6 +21,7 @@ class ClubClass:
         self.name = ''
         self.tags = []
         self.desc = ''
+        self.favcount = 0
 
     def toJson(self):
         return json.dumps(self.__dict__)
@@ -28,9 +29,13 @@ class ClubClass:
     def writeName(self, name):
         self.name = name
 
-    def addTags(self, tags):
+    def addTagSoup(self, tags):
         for t in tags:
             self.tags.append(t.text)
+
+    def addTagStrings(self, tags):
+        for t in tags:
+            self.tags.append(t)
 
     def clearTags(self):
         self.tags = []
@@ -125,38 +130,43 @@ def get_club_object(club):
 
     tempObj = ClubClass()
     tempObj.writeName(get_club_name(club))
-    tempObj.addTags(get_club_tags(club))
+    tempObj.addTagSoup(get_club_tags(club))
     tempObj.writeDesc(get_club_description(club))
 
     return tempObj
 
-def get_club_json(club):
+def club_obj_list(club_arr):
     """
-    Basically a wrapper for 
+    Takes an array of club soups and turns it into
+    native objects
     """
 
-    return get_club_object(club).toJson()
+    obj_arr = []
+    for club in club_arr:
+        obj_arr.append(get_club_object(club))
+
+    return obj_arr
 
 def club_arr_to_file(club_arr):
     """
-    Take the list of club soups and throw em into a big ol JSON array
+    Take the list of club objects and throw em into a big ol JSON array
     Writes aforementioned JSON array to ./clubs.json
     """
 
     json_arr = []
     for club in club_arr:
-        json_arr.append(get_club_object(club).toJson())
+        json_arr.append(club.toJson())
 
     with open('clubs.json', 'w') as outfile:
         json.dump(json_arr, outfile)
 
-def get_club_obj_list(club_arr):
+def get_club_json_list(club_arr):
     """
-    Take a list of club soups and returns a json list
+    Take a list of club objs and returns a json list
     """
 
     json_arr = []
     for club in club_arr:
-        json_arr.append(get_club_object(club).toJson())
+        json_arr.append(club.toJson())
 
-    return json.dump(json_arr)
+    return json.dumps(json_arr)
