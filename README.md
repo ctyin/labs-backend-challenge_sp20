@@ -1,8 +1,8 @@
 # Penn Labs Server Challenge
 
 ## Documentation
-In order to store the clubs, I chose the JSON route for the following reasons:
-   * Persistence: to prevent having to rescrape the website, I didn't want to store the clubs in-memory. The only other option I was seriously considering was pickling. However, JSON is a more widely used standard and is not Python-specific.
+In order to store the clubs, I chose the JSON file route for the following reasons:
+   * Persistence: to prevent having to rescrape the website, I didn't want to store the clubs in-memory. The only other option I was seriously considering was pickling. However, JSON is a more widely used standard and is not Python-specific. In the future, I would probably want to store this information in a database like MongoDB which uses JSON as well.
    * Ease of use: the JSON module in Python is pretty clean. Python object fields become dictionaries become JSON objects, and it easily transforms arrays to JSON arrays without much thought. 
 
 ## Installation
