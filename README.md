@@ -5,7 +5,7 @@ In order to store the clubs, I save them to a JSON file. I chose the JSON file r
    * Persistence: to prevent having to rescrape the website, I didn't want to store the clubs in-memory. The only other option I was seriously considering was pickling. However, JSON is a more widely used standard and is not Python-specific. Looking ahead, this will also be helpful in my `GET /api/clubs` route.
    * Ease of use: the JSON module in Python is pretty clean. The Python object fields I needed easily become JSON objects; Python arrays become JSON arrays without much thought.
 
-In order to store the users, I am creating a dictionary that maps usernames to user objects. Because my objects are more complex and are using the Python `Set` datatype, I will be using pickle to intermittently serialize the data to a file. I will have it initially serialized to a file and then deserialized into an in-memory dict when the app starts.
+In order to store the users, I am creating a dictionary that maps usernames to user objects. Because my objects are more complex and are using the Python `Set` datatype, I will be using pickle to intermittently serialize the data to a file. I will have it initially serialized to a file and then deserialized into an in-memory dict when the app starts. You can find this code in `user.py`
 
 
 ## Installation
