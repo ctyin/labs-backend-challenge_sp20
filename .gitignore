@@ -1,2 +1,5 @@
 Pipfile.lock
 *.pyc
+venv/
+*.p
+*.json

@@ -2,10 +2,41 @@ from bs4 import BeautifulSoup
 import requests
 import urllib.request
 import time
+import json
 
 """
 References https://towardsdatascience.com/how-to-web-scrape-with-python-in-4-minutes-bc49186a8460
 """
+
+class ClubClass:
+    """
+    Stores the information for a single club
+    Fields:
+        - Name
+        - Tags
+        - Description
+    """
+
+    def __init__(self):
+        self.name = ''
+        self.tags = []
+        self.desc = ''
+
+    def toJson(self):
+        return json.dumps(self.__dict__)
+
+    def writeName(self, name):
+        self.name = name
+
+    def addTags(self, tags):
+        for t in tags:
+            self.tags.append(t.text)
+
+    def clearTags(self):
+        self.tags = []
+
+    def writeDesc(self, desc):
+        self.desc = desc
 
 def get_html(url):
     """
@@ -76,12 +107,56 @@ def get_club_description(club):
     elts = get_elements_with_class(club, 'em', '')
     if len(elts) < 1:
         return ''
-    return elts[0]
+    return elts[0].text
 
 def get_club_tags(club):
     """
     Get the tag labels for all tags associated with a single club.
     """
-    tag_list = get_elements_with_class(club, 'tag is-info is-rounded')
+    tag_list = get_elements_with_class(club, 'span', 'tag is-info is-rounded')
 
     return tag_list
+
+def get_club_object(club):
+    """
+    Creates the club object from the club soup
+    Returns the object with modified fields (object definition at top)
+    """
+
+    tempObj = ClubClass()
+    tempObj.writeName(get_club_name(club))
+    tempObj.addTags(get_club_tags(club))
+    tempObj.writeDesc(get_club_description(club))
+
+    return tempObj
+
+def get_club_json(club):
+    """
+    Basically a wrapper for 
+    """
+
+    return get_club_object(club).toJson()
+
+def club_arr_to_file(club_arr):
+    """
+    Take the list of club soups and throw em into a big ol JSON array
+    Writes aforementioned JSON array to ./clubs.json
+    """
+
+    json_arr = []
+    for club in club_arr:
+        json_arr.append(get_club_object(club).toJson())
+
+    with open('clubs.json', 'w') as outfile:
+        json.dump(json_arr, outfile)
+
+def get_club_obj_list(club_arr):
+    """
+    Take a list of club soups and returns a json list
+    """
+
+    json_arr = []
+    for club in club_arr:
+        json_arr.append(get_club_object(club).toJson())
+
+    return json.dump(json_arr)
