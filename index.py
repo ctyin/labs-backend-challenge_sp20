@@ -11,7 +11,7 @@ If they don't, instantiate an empty data struct
 """
 if os.path.isfile('clubs.json'):
 	with open('clubs.json') as clubfile:
-		clubs_arr = json.loads(clubfile)
+		clubs_arr = json.load(clubfile)
 else:
 	clubs_arr = club_obj_list(get_clubs(soupify(get_clubs_html())))
 
@@ -20,6 +20,12 @@ if os.path.isfile('users.p'):
 		users_dict = pickle.load(userfile)
 else:
 	users_dict = {}
+
+
+"""
+Current user object that changes when logging in/out
+"""
+curr_user = None
 
 @app.route('/')
 def main():
@@ -82,7 +88,7 @@ def addToFavorites():
 			# Prob should have made this a dict as well
 			for club in clubs_arr:
 				if club.name == fav:
-					print('reached')
+					print('Added to club\'s count')
 					club.favcount += 1
 	else:
 		return "Not a valid username"
@@ -90,7 +96,7 @@ def addToFavorites():
 	return "Success"
 
 # code adapted from https://www.youtube.com/watch?v=7pOXnc5kS54
-@app.route('/shutdown', methods=['POST'])
+@app.route('/shutdown', methods=['GET', 'POST'])
 def shutdown_server():
 	"""
 	Handle writing data to file. Starting to realize my way of storing data
@@ -103,7 +109,8 @@ def shutdown_server():
 	if shutdown is None:
 		raise RuntimeError('Function is unavailable')
 	else:
-
+		club_arr_to_file(clubs_arr)
+		pickle.dump(users_dict, open('users.p', 'wb'))
 
 		shutdown()
 
