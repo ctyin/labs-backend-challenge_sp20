@@ -2,6 +2,7 @@ from flask import Flask, request
 from scraper import * # Web Scraping utility functions for Online Clubs with Penn.
 from user import UserClass
 import json, pickle, os
+import bcrypt
 app = Flask(__name__)
 
 
@@ -42,9 +43,13 @@ def clubs():
 		# send the JSON list
 		return get_club_json_list(clubs_arr)
 	else:
+		if not curr_user:
+			return "Log in to add your club"
+
 		temp = ClubClass()
 
-		print(request.args.getlist('tags'))
+		# TODO: Add a scan to check for duplicate club names before adding
+
 
 		# Assuming that the subsequent AJAX calls will just throw the tags in
 		# under the same key. Could easily change to form data I think
@@ -78,6 +83,9 @@ def addToFavorites():
 	Makes use of set data structure to impl 1 addition per user
 	"""
 
+	if not curr_user:
+		return "Log in to favorite this club"
+
 	user = request.args.get('user')
 	fav = request.args.get('club')
 
@@ -95,14 +103,75 @@ def addToFavorites():
 
 	return "Success"
 
+@app.route('/api/signup', methods=['POST'])
+def addNewUser():
+	"""
+	Checks if a user exists in the table already. If it's 
+	a valid new username, we instantiate it and log the user in.
+	Passwords are encoded then handled by bcrypt
+	"""
+
+	req_name     = request.args.get('name')
+	req_username = request.args.get('username')
+	req_password = request.args.get('password')
+	
+	if req_username in users_dict:
+		return 'Username already exists'
+
+	# if the username is unique, continue
+	tempUser = UserClass()
+	tempUser.name = req_name
+	tempUser.username = req_username
+
+	salt = bcrypt.gensalt()
+	tempUser.pswdHash = bcrypt.hashpw(req_password.encode('utf-8'), salt)
+
+	# log the user in
+	global curr_user
+	curr_user = tempUser
+
+	users_dict[req_username] = tempUser
+
+	return "Completed signup. Welcome, {}!".format(req_name)
+
+@app.route('/api/login')
+def loginUser():
+	global curr_user
+	if not curr_user:
+		# current user is still None
+		req_username = request.args.get('username')
+		req_password = request.args.get('password').encode('utf-8')
+
+		if req_username in users_dict:
+			saved_user = users_dict[req_username]
+			if bcrypt.checkpw(req_password, saved_user.pswdHash):
+				curr_user = saved_user
+				return "Success! Welcome, {}!".format(saved_user.name)
+		
+		return 'Username or password incorrect'
+	else:
+		return 'Please log out first'
+
+@app.route('/api/logout')
+def logoutUser():
+	global curr_user
+	if curr_user:
+		curr_user = None
+		return 'Logged out'
+	else:
+		return 'No user is signed in'
+
 # code adapted from https://www.youtube.com/watch?v=7pOXnc5kS54
-@app.route('/shutdown', methods=['GET', 'POST'])
+@app.route('/shutdown', methods=['POST'])
 def shutdown_server():
 	"""
 	Handle writing data to file. Starting to realize my way of storing data
-	is kind of dumb but I can't think of a better way to store it locally
+	is kind of dumb but I'm struggling to think of a better way to store it locally
 	without introducing a real DB
 	"""
+
+	if not curr_user:
+		return "You need to be logged in to shut down my server D:<"
 
 	print('Shutdown context hit with post')
 	shutdown = request.environ.get('werkzeug.server.shutdown')
@@ -113,6 +182,7 @@ def shutdown_server():
 		pickle.dump(users_dict, open('users.p', 'wb'))
 
 		shutdown()
+		return 'Server is shutting down'
 
 if __name__ == '__main__':
     app.run()

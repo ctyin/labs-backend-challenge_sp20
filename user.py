@@ -2,14 +2,16 @@ import pickle
 
 class UserClass:
     """
-	Holds the fields that I might want for a user in the future
+	Holds the fields needed for required API features and the login feature
+    Note that saving the salt in plaintext is not needed here because
+    it's taken care of by bcrypt
     """
 
     def __init__(self, name='', username='', pswdHash='', salt='', favorites=set()):
         self.name = name
         self.username = username
         self.pswdHash = pswdHash
-        self.salt = salt
+        # self.salt = salt
         self.favorites = favorites
 
     def addToFavs(self, name):
