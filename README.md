@@ -43,7 +43,7 @@ I included in the Pipfile the `requests` package because I needed to get the HTM
 
 ## Developing
 1. ~Use `pipenv run index.py` to run the project.~
-I was having trouble using pipenv run. Instead the commands `export FLASK_APP=index.py` followed by `flask run` was how I got it working.
+I was having trouble using pipenv run. **Instead the commands `export FLASK_APP=index.py` followed by `flask run` was how I got it working.**
 2. Follow the instructions [here](https://www.notion.so/pennlabs/Server-Challenge-Spring-20-5a14bc18fb2f44ba90a61ba86b6fc426).
 3. Document your work in this `README.md` file.
 
