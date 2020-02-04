@@ -24,8 +24,14 @@ In order to implement the signup/login/logout features, we introduced following 
 
   * Added basic checks at all POST requests to see if a user is logged in.
 
+## Known bugs / open issues
+Frick there are too many to write about. Jk generally it's pretty functional from my basic tests.
+  * Don't do a 'graceful shutdown' and then start up the server without deleting the clubs.json file first. Expected error: "str has no attribute 'toJson'".
+  * Not really a bug but some of my query string key names are not entirely consistent. Sorry for the bad style
+  * Sending a POST request in `/api/clubs` should check for duplicate club names but was never added.
+
 ## Packages introduced
-I included in the Pipfile the `requests` package because I needed to get the HTML from a website in the web scraper. I also added bcrypt as suggested to implement the sign up/login/logout behavior. These should be installed automatically when `pipenv install` is run
+I included in the Pipfile the `requests` package because I needed to get the HTML from a website in the web scraper. I also added `bcrypt` as suggested to implement the sign up/login/logout behavior. These should be installed automatically when `pipenv install` is run
 
 ## Installation
 1. Click the green "use this template" button to make your own copy of this repository, and clone it. 
