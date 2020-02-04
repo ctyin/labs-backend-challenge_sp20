@@ -13,13 +13,16 @@ In order to store the users, I am creating a dictionary that maps usernames to u
 
 With my schema of saving club objects as an array, modifying them is pretty straight-forward. Perform a linear search and update the field. I do this in the `/api/favorite` route for example.
 
-## My own additions
-It didn't make sense for me to put the user class definition in either of the provided python files so I made a new one called user.py where I also hardcode the Jennifer object.
+## Login/Logout Feature
+In order to implement the signup/login/logout features, we introduced following modifications:
+   * Creating a global "current user." Disclaimer: I wasn't sure how to handle logging in multiple users at once or if that even made sense for my server. The server keeps track of the current user object and the server queries against that object in subsequent requests. Note that Python has some relatively wonky behavior with global variables so remember to use the `global` keyword before trying to change or modify the object (spend like 20 min debugging that ://)
+   * Added the hashed-password field to the user object. Bcrypt makes salted hashing pretty simple because I was originally anticipating having to save the random nonce separately in the user object (bcrypt stores the nonce concatenated with the password, so we only save one password field).
+   * Added the following endpoints. There is an existing distinction between the `/ ` endpoint and the `/api/` routes so I tried to maintain it for this feature.
+      - `/api/login` Given the query string params `username` and `password`, the server checks your hashed password against the existing one. Would have been smarter to put these params in a form or something encrypted because saving raw text passwords in the URL is bad. However I didn't have the time to look into that.
+      - `/api/logout` If a user is logged in, the current user variable is set to None. Otherwise nothing happens.
+      - `/api/signup` Accepts the query string params `username`, `name` and `password`. Everything else is taken care of by the defaults in the class declaration. Unless the username already exists, the system should create the new user and log them in, regardless if someone was logged in previously.
 
-In order to implement the signup/login/logout features, I needed to add the following modifications:
-   * Creating a global "current user." I wasn't sure how to handle logging in multiple users at once or if that even made sense for my server. All this does it keep track of the current user object and the server queries against that object in subsequent requests. Note that Python has some relatively wonky behavior with global variables so remember to use the `global` keyword before trying to change or modify the object (spend like 20 min debugging that ://)
-   * Added the hashed-password field to my user object. Bcrypt makes salted hashing pretty simple because I was originally anticipating having to save the random nonce separately in the user object (bcrypt stores the nonce concatenated with the password, so we only save one password field).
-   * Added the `/api/login`, `/api/logout`, and `/api/signup` endpoints. There seems to be an existing distinction between the `/ ` endpoint and the `/api/` endpoint so I tried to maintain it for this feature.
+  * Added basic checks at all POST requests to see if a user is logged in.
 
 ## Packages introduced
 I included in the Pipfile the `requests` package because I needed to get the HTML from a website in the web scraper. I also added bcrypt as suggested to implement the sign up/login/logout behavior. These should be installed automatically when `pipenv install` is run
