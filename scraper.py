@@ -3,6 +3,7 @@ import requests
 import urllib.request
 import time
 import json
+import bcrypt
 
 """
 References https://towardsdatascience.com/how-to-web-scrape-with-python-in-4-minutes-bc49186a8460
